@@ -117,10 +117,7 @@ namespace EasyFTP
 
             foreach(var dir in directories)
             {
-                //directoryNode.ImageIndex = 1;
-                //directoryNode.SelectedImageIndex = 1;
                 directoryNode.Nodes.Add(CreateDirectoryNode(dir.FullPath, dir.Name));
-                
             }
             foreach (var file in files)
             {
