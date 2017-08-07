@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.textBox_ip = new System.Windows.Forms.TextBox();
             this.label_ip = new System.Windows.Forms.Label();
             this.label_user = new System.Windows.Forms.Label();
@@ -36,6 +38,7 @@
             this.textBox_pass = new System.Windows.Forms.TextBox();
             this.button_showFiles = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.imageList_fileType = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // textBox_ip
@@ -99,10 +102,20 @@
             // 
             // treeView1
             // 
+            this.treeView1.ImageIndex = 1;
+            this.treeView1.ImageList = this.imageList_fileType;
             this.treeView1.Location = new System.Drawing.Point(249, 51);
             this.treeView1.Name = "treeView1";
+            this.treeView1.SelectedImageIndex = 1;
             this.treeView1.Size = new System.Drawing.Size(486, 234);
             this.treeView1.TabIndex = 7;
+            // 
+            // imageList_fileType
+            // 
+            this.imageList_fileType.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList_fileType.ImageStream")));
+            this.imageList_fileType.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList_fileType.Images.SetKeyName(0, "folder.ico");
+            this.imageList_fileType.Images.SetKeyName(1, "file.png");
             // 
             // Form1
             // 
@@ -135,6 +148,7 @@
         private System.Windows.Forms.TextBox textBox_pass;
         private System.Windows.Forms.Button button_showFiles;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.ImageList imageList_fileType;
     }
 }
 

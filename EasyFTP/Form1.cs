@@ -117,15 +117,22 @@ namespace EasyFTP
 
             foreach(var dir in directories)
             {
+                //directoryNode.ImageIndex = 1;
+                //directoryNode.SelectedImageIndex = 1;
                 directoryNode.Nodes.Add(CreateDirectoryNode(dir.FullPath, dir.Name));
+                
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
+                directoryNode.ImageIndex = 0;
+                directoryNode.SelectedImageIndex = 0;
                 directoryNode.Nodes.Add(new TreeNode(file.Name));
+                
             }
 
             return directoryNode;
         }
+
     }
 
     public class FtpDetails
