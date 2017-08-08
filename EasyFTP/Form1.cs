@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,7 +23,16 @@ namespace EasyFTP
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            ContextMenu contextMenu1 = new ContextMenu();
+            MenuItem menuItem1 = new MenuItem();
 
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
+            contextMenu1.MenuItems.AddRange(new MenuItem[] { menuItem1 });
+            menuItem1.Index = 0;
+            menuItem1.Text = Strings.DownloadFiles;
+
+            treeView1.ContextMenu = contextMenu1;
         }
 
         private static FtpWebRequest GetWebRequest(string user, string pass, string uri, string method)
@@ -97,10 +108,10 @@ namespace EasyFTP
 
         private void showFiles(object sender, EventArgs e)
         {
-            string ip = textBox_ip.Text;
+            string uri = textBox_ip.Text;
 
             treeView1.Nodes.Clear();
-            treeView1.Nodes.Add(CreateDirectoryNode(ip, "Ftp Test"));
+            treeView1.Nodes.Add(CreateDirectoryNode(uri, uri));
         }
 
         private TreeNode CreateDirectoryNode(string path, string name)
@@ -130,6 +141,15 @@ namespace EasyFTP
             return directoryNode;
         }
 
+        
+        private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                string fullPath = treeView1.GetNodeAt(e.Location).FullPath;
+                fullPath = fullPath.Replace('\\', '/');
+            }
+        }
     }
 
     public class FtpDetails

@@ -109,6 +109,7 @@
             this.treeView1.SelectedImageIndex = 1;
             this.treeView1.Size = new System.Drawing.Size(486, 234);
             this.treeView1.TabIndex = 7;
+            this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
             // 
             // imageList_fileType
             // 
