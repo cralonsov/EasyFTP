@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.textBox_ip = new System.Windows.Forms.TextBox();
+            this.textBox_uri = new System.Windows.Forms.TextBox();
             this.label_ip = new System.Windows.Forms.Label();
             this.label_user = new System.Windows.Forms.Label();
             this.textBox_user = new System.Windows.Forms.TextBox();
@@ -39,14 +39,18 @@
             this.button_showFiles = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.imageList_fileType = new System.Windows.Forms.ImageList(this.components);
+            this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBox_ip
+            // textBox_uri
             // 
-            this.textBox_ip.Location = new System.Drawing.Point(12, 51);
-            this.textBox_ip.Name = "textBox_ip";
-            this.textBox_ip.Size = new System.Drawing.Size(163, 20);
-            this.textBox_ip.TabIndex = 0;
+            this.textBox_uri.Location = new System.Drawing.Point(12, 51);
+            this.textBox_uri.Name = "textBox_uri";
+            this.textBox_uri.Size = new System.Drawing.Size(163, 20);
+            this.textBox_uri.TabIndex = 0;
             // 
             // label_ip
             // 
@@ -102,6 +106,8 @@
             // 
             // treeView1
             // 
+            this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
+            this.treeView1.HideSelection = false;
             this.treeView1.ImageIndex = 1;
             this.treeView1.ImageList = this.imageList_fileType;
             this.treeView1.Location = new System.Drawing.Point(249, 51);
@@ -118,6 +124,21 @@
             this.imageList_fileType.Images.SetKeyName(0, "folder.ico");
             this.imageList_fileType.Images.SetKeyName(1, "file.png");
             // 
+            // downloadToolStripMenuItem
+            // 
+            this.downloadToolStripMenuItem.Name = "downloadToolStripMenuItem";
+            this.downloadToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.downloadToolStripMenuItem.Text = "Download";
+            this.downloadToolStripMenuItem.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.downloadToolStripMenuItem.Click += new System.EventHandler(this.downloadToolStripMenuItem_Click);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.downloadToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(129, 26);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -130,10 +151,11 @@
             this.Controls.Add(this.label_user);
             this.Controls.Add(this.textBox_user);
             this.Controls.Add(this.label_ip);
-            this.Controls.Add(this.textBox_ip);
+            this.Controls.Add(this.textBox_uri);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -141,7 +163,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox_ip;
+        private System.Windows.Forms.TextBox textBox_uri;
         private System.Windows.Forms.Label label_ip;
         private System.Windows.Forms.Label label_user;
         private System.Windows.Forms.TextBox textBox_user;
@@ -150,6 +172,9 @@
         private System.Windows.Forms.Button button_showFiles;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.ImageList imageList_fileType;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem downloadToolStripMenuItem;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
     }
 }
 

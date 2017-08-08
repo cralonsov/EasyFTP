@@ -16,6 +16,8 @@ namespace EasyFTP
 {
     public partial class Form1 : Form
     {
+        static string downloadFtpPath = string.Empty;
+
         public Form1()
         {
             InitializeComponent();
@@ -23,16 +25,8 @@ namespace EasyFTP
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            ContextMenu contextMenu1 = new ContextMenu();
-            MenuItem menuItem1 = new MenuItem();
-
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
-
-            contextMenu1.MenuItems.AddRange(new MenuItem[] { menuItem1 });
-            menuItem1.Index = 0;
-            menuItem1.Text = Strings.DownloadFiles;
-
-            treeView1.ContextMenu = contextMenu1;
+            downloadToolStripMenuItem.Text = Strings.DownloadFiles;
         }
 
         private static FtpWebRequest GetWebRequest(string user, string pass, string uri, string method)
@@ -82,7 +76,7 @@ namespace EasyFTP
                     result.Remove(result.ToString().LastIndexOf('\n'), 1);
                     var results = result.ToString().Split('\n');
 
-                    var myResult = new List<FtpDetails>();
+                    var ftpDetails = new List<FtpDetails>();
                     foreach (var file in results)
                     {
                         string[] tokens = file.Split(new[] { ' ' }, 9, System.StringSplitOptions.RemoveEmptyEntries);
@@ -91,7 +85,7 @@ namespace EasyFTP
                         string fileType = tokens[2];
                         string fileName = tokens[3];
 
-                        myResult.Add(new FtpDetails()
+                        ftpDetails.Add(new FtpDetails()
                         {
                             Time = fileTime,
                             Date = fileDate,
@@ -101,14 +95,74 @@ namespace EasyFTP
                         });
                     }
 
-                    return myResult;
+                    return ftpDetails;
+                }
+            }
+        }
+
+        static void DownloadFtpDirectory(string user, string pass, string uri, string localPath)
+        {
+            FtpWebRequest request = GetWebRequest(user, pass, uri, WebRequestMethods.Ftp.ListDirectoryDetails);
+
+            List<string> lines = new List<string>();
+
+            using (FtpWebResponse listResponse = (FtpWebResponse)request.GetResponse())
+            using (Stream listStream = listResponse.GetResponseStream())
+            using (StreamReader listReader = new StreamReader(listStream))
+            {
+                while (!listReader.EndOfStream)
+                {
+                    lines.Add(listReader.ReadLine());
+                }
+            }
+
+            foreach (string line in lines)
+            {
+                // This gives problems when the folder/file has spaces in its name
+                string[] tokens = line.Split(new[] { ' ' }, 9, System.StringSplitOptions.RemoveEmptyEntries);
+                string name = tokens[3];
+                string type = tokens[2];
+
+                string localFilePath = Path.Combine(localPath, name);
+
+                // This gives problems when trying to download a single file
+                string fileUrl = fileUrl = uri + "/" + name; 
+
+                if (type == "<DIR>")
+                {
+                    if (!Directory.Exists(localFilePath))
+                    {
+                        Directory.CreateDirectory(localFilePath);
+                    }
+
+                    DownloadFtpDirectory(user, pass, fileUrl + "/", localFilePath);
+                }
+
+                else
+                {
+                    if (!File.Exists(localFilePath))
+                    {
+                        FtpWebRequest downloadRequest = GetWebRequest(user, pass, fileUrl, WebRequestMethods.Ftp.DownloadFile);
+
+                        using (FtpWebResponse downloadResponse = (FtpWebResponse)downloadRequest.GetResponse())
+                        using (Stream sourceStream = downloadResponse.GetResponseStream())
+                        using (Stream targetStream = File.Create(localFilePath))
+                        {
+                            byte[] buffer = new byte[10240];
+                            int read;
+                            while ((read = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                targetStream.Write(buffer, 0, read);
+                            }
+                        }
+                    }
                 }
             }
         }
 
         private void showFiles(object sender, EventArgs e)
         {
-            string uri = textBox_ip.Text;
+            string uri = textBox_uri.Text;
 
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(CreateDirectoryNode(uri, uri));
@@ -118,10 +172,10 @@ namespace EasyFTP
         {
             string user = textBox_user.Text;
             string pass = textBox_pass.Text;
-            string ip = path;
+            string uri = path;
 
             TreeNode directoryNode = new TreeNode(name);
-            var fileList = GetFileList(user, pass, ip, "");
+            var fileList = GetFileList(user, pass, uri, "");
 
             var directories = fileList.Where(f => f.IsDirectory);
             var files = fileList.Where(f => !f.IsDirectory);
@@ -140,14 +194,33 @@ namespace EasyFTP
 
             return directoryNode;
         }
-
         
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            treeView1.SelectedNode = e.Node;
+
+            if (e.Button == MouseButtons.Right)
             {
-                string fullPath = treeView1.GetNodeAt(e.Location).FullPath;
-                fullPath = fullPath.Replace('\\', '/');
+                if(treeView1.SelectedNode != null)
+                {
+                    downloadFtpPath = treeView1.GetNodeAt(e.Location).FullPath;
+                    downloadFtpPath = downloadFtpPath.Replace('\\', '/');
+                }
+            }
+        }
+
+        private void downloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string user = textBox_user.Text;
+            string pass = textBox_pass.Text;
+            string uri = textBox_uri.Text;
+
+            folderBrowserDialog1.ShowDialog();
+            string localPath = folderBrowserDialog1.SelectedPath;
+
+            if(localPath != null)
+            {
+                DownloadFtpDirectory(user, pass, downloadFtpPath, localPath);
             }
         }
     }
